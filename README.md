@@ -328,7 +328,7 @@ Falcon includes a **complete package manager** for installing, creating, and man
 
 ## Commands
 
-### FPM - npm/pip Style Interface (Recommended)
+### FPM - Falcon Package Manager
 ```bash
 # Install packages
 fpm install package-name
