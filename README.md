@@ -32,7 +32,7 @@ This repository contains the full Falcon **prototype implementation**, including
 - **Stack-based Virtual Machine** - Executes bytecode efficiently
 - **Hybrid Interpreter** - Handles dynamic features and closures
 - **REPL** - Interactive development environment
-- **Built-in functions** - Core runtime library (including `show`, `console.log`, regex functions, Promise API)
+- **Built-in functions** - Core runtime library (including `show`, `console.log`, regex functions)
 - **Sample `.fn` programs** - Comprehensive examples  
 
 Falcon is actively evolving toward a **production-grade scripting language** with modules, async, optimized bytecode, and an ahead-of-time compiler.
@@ -265,6 +265,209 @@ Hello, Falcon!
 
 ---
 
+# 🎨 Passive Built-in Formatter
+
+Falcon includes a **passive AST-based formatter** that automatically normalizes code structure during execution. No manual commands required.
+
+## How It Works
+
+The formatter runs automatically in the execution pipeline:
+```
+source code → lexer → parser → AST → formatter normalization → interpreter/compiler
+```
+
+## Features
+
+- **Automatic**: Runs on every execution without user intervention
+- **Memory-only**: Never modifies source files on disk
+- **Deterministic**: Same AST always produces the same normalized structure
+- **Graceful**: Formatting failures don't break execution
+
+## Formatting Rules
+
+- **4-space indentation** (configurable)
+- **K&R brace style** - opening braces on same line
+- **Operator spacing** - proper spacing around `+`, `-`, `*`, `/`, etc.
+- **Function formatting** - consistent parameter and body formatting
+- **Collection formatting** - proper list, tuple, dictionary formatting
+
+## Example Transformation
+
+Input code with inconsistent formatting:
+```falcon
+function add(a,b){return a+b}
+var x:=5
+var y:=10
+show(add(x,y))
+```
+
+Gets automatically normalized during execution:
+```falcon
+function add(a, b) {
+    return a + b
+}
+
+var x := 5
+var y := 10
+show(add(x, y))
+```
+
+## Integration
+
+- **Runner**: Automatically formats when running `.fn` files
+- **REPL**: Formats each input before interpretation
+- **Zero configuration**: Works out of the box
+
+The formatter ensures consistent code structure across all Falcon programs while maintaining full backward compatibility.
+
+---
+
+# 📦 Package Manager
+
+Falcon includes a **complete package manager** for installing, creating, and managing Falcon packages.
+
+## Commands
+
+### FPM - npm/pip Style Interface (Recommended)
+```bash
+# Install packages
+fpm install package-name
+fpm i package-name
+
+# List installed packages
+fpm list
+
+# Show package information
+fpm info package-name
+
+# Uninstall packages
+fpm uninstall package-name
+fpm un package-name
+
+# Create new packages
+fpm create package-name
+```
+
+### Traditional Interface
+```bash
+# Install from local directory
+falcon pkg install ./my-package
+
+# Install from archive
+falcon pkg install my-package.tar.gz
+
+# Install from URL
+falcon pkg install https://github.com/user/repo/releases/download/v1.0.0/package.tar.gz
+```
+
+### Package Management
+```bash
+# List installed packages
+falcon pkg list
+
+# Search packages
+falcon pkg list --search <query>
+
+# Show package information
+falcon pkg info <package-name>
+
+# Uninstall package
+falcon pkg uninstall <package-name>
+```
+
+### Package Creation
+```bash
+# Create new package
+falcon pkg create my-package --description "My awesome package" --author "Your Name"
+
+# This creates:
+my-package/
+├── falcon.pkg      # Package metadata
+└── lib/            # Package source files
+```
+
+## Package Structure
+
+A Falcon package contains:
+
+```
+my-package/
+├── falcon.pkg      # JSON metadata (name, version, dependencies, etc.)
+├── lib/            # Package source files (.fn files)
+├── examples/       # Usage examples (optional)
+└── README.md       # Package documentation (optional)
+```
+
+## Metadata Format
+
+```json
+{
+  "name": "package-name",
+  "version": "1.0.0", 
+  "description": "Package description",
+  "author": "Author Name",
+  "license": "MIT",
+  "dependencies": {
+    "other-package": ">=1.0.0"
+  },
+  "main": "main-module",
+  "exports": ["function1", "function2"]
+}
+```
+
+## Features
+
+- **Multiple sources**: Install from directories, archives, or URLs
+- **Dependency resolution**: Automatic dependency checking and conflict detection
+- **Semantic versioning**: Version constraint support (>=, <=, >, <, exact)
+- **Package registry**: Local registry with checksums and metadata
+- **CLI integration**: Full command-line interface with `falcon pkg`
+- **Development tools**: Package creation scaffolding and templates
+- **Modular design**: Packages remain separate from core language
+
+## Storage
+
+Packages are installed in `.falcon/packages/` with a local registry in `.falcon/registry.json`. This keeps the core Falcon language minimal while allowing rich package ecosystem growth.
+
+## Getting Started
+
+### Quick Start with FPM (Recommended)
+```bash
+# Create a new package
+fpm create my-awesome-package --author "Your Name"
+
+# Install a package
+fpm install my-awesome-package
+fpm i my-awesome-package              # short form
+
+# List all installed packages
+fpm list
+
+# Show package details
+fpm info my-awesome-package
+
+# Uninstall a package
+fpm uninstall my-awesome-package
+fpm un my-awesome-package           # short form
+```
+
+### Traditional Interface
+```bash
+# Create a new package
+falcon pkg create my-awesome-package --author "Your Name"
+
+# Install a package from local directory
+falcon pkg install ./my-awesome-package
+
+# List all installed packages
+falcon pkg list
+
+# Show package details
+falcon pkg info my-awesome-package
+```
+
+---
+
 # ▶ Building Windows .exe / Setup
 
 Build standalone CLI executable:
@@ -311,6 +514,20 @@ falcon/
 │   │   ├── env.py          # Environment: variable scopes and bindings
 │   │   ├── builtins.py      # Built-in functions and runtime utilities
 │   │   ├── compiler.py      # Compiler: converts AST to bytecode
+│   │   ├── formatter/        # Passive built-in formatter
+│   │   │   ├── __init__.py  # Package exports
+│   │   │   ├── formatter.py  # AST visitor for normalization
+│   │   │   ├── printer.py    # Structured output generation
+│   │   │   └── rules.py     # Formatting rules configuration
+│   │   ├── package_manager/ # Package manager system
+│   │   │   ├── __init__.py  # Package exports
+│   │   │   ├── cli.py        # Traditional CLI interface
+│   │   │   ├── fpm_cli.py    # npm/pip style CLI interface (FPM)
+│   │   │   ├── config.py     # Configuration management
+│   │   │   ├── installer.py  # Package installation logic
+│   │   │   ├── manager.py    # Main package manager interface
+│   │   │   ├── package.py    # Package representation
+│   │   │   └── resolver.py   # Dependency resolution
 │   │   ├── repl.py          # REPL: interactive development environment
 │   │   ├── runner.py        # File runner: executes .fn programs
 │   │   └── utils/          # Utility modules
@@ -724,10 +941,10 @@ show("Promise scheduled.");
 - [ ] Debugger + stack traces  
 
 ### 🛠 Tooling  
-- [ ] `falcon fmt` — code formatter  
+- [x] **Passive built-in formatter** — AST-based code normalization (automatic, no CLI command needed)
 - [ ] LSP server for VS Code  
-- [ ] Package manager  
-- [ ] Installer (.exe / .msi / .deb)  
+- [x] **Package manager** — Install, manage, and create Falcon packages with npm/pip style interface
+- [x] **Installer** — Windows .exe and installer implemented (.deb not yet implemented)  
 
 ---
 

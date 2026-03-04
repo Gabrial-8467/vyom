@@ -13,7 +13,7 @@ Design rules:
 from __future__ import annotations
 from typing import Callable, Tuple
 
-__version__ = "0.3.0"
+__version__ = "1.0.0"
 
 __all__ = [
     "run_file",

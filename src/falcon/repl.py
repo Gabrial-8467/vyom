@@ -25,6 +25,7 @@ from .lexer import Lexer, LexerError
 from .parser import Parser, ParseError
 from .interpreter import Interpreter, InterpreterError
 from .type_checker import TypeChecker, TypeCheckError
+from .formatter import FalconFormatter
 
 _HISTFILE = os.path.expanduser("~/.falcon_history")
 
@@ -88,7 +89,7 @@ def _balanced(source: str) -> bool:
 
 def _run_source(source: str, interpreter: Interpreter, filename: str = "<repl>") -> None:
     """
-    Lex -> Parse -> Interpret the given source string. Errors printed to stderr.
+    Lex -> Parse -> Normalize -> Interpret given source string. Errors printed to stderr.
     """
     try:
         lexer = Lexer(source)
@@ -96,6 +97,15 @@ def _run_source(source: str, interpreter: Interpreter, filename: str = "<repl>")
         parser = Parser(tokens)
         stmts = parser.parse()
         TypeChecker().check(stmts)
+        
+        # Passive AST normalization (in-memory only)
+        try:
+            formatter = FalconFormatter()
+            formatter.format_statements(stmts)
+        except Exception:
+            # If formatting fails, continue with original AST
+            pass
+        
         interpreter.interpret(stmts)
     except LexerError as le:
         print(f"{filename}: Lexer error: {le}", file=sys.stderr)

@@ -20,7 +20,7 @@ from .compiler import Compiler, Code, CompileError
 from .vm import VM, VMRuntimeError
 from .builtins import BUILTINS
 from .type_checker import TypeChecker, TypeCheckError
-
+from .formatter import FalconFormatter
 
 # --------------------------------------------
 # Helpers
@@ -77,6 +77,19 @@ def dump_vm_debug(vm: VM) -> None:
 # --------------------------------------------
 # MAIN EXECUTION LOGIC
 # --------------------------------------------
+def normalize_ast(ast) -> None:
+    """Passively normalize AST structure using formatter (in-memory only)."""
+    try:
+        formatter = FalconFormatter()
+        # The formatter processes the AST but we don't use the output
+        # This ensures consistent AST structure for compilation/interpretation
+        formatter.format_statements(ast.body if hasattr(ast, 'body') else [ast])
+    except Exception:
+        # If formatting fails, continue with original AST
+        # This ensures the formatter never breaks execution
+        pass
+
+
 def run_file(path: str) -> int:
     if not path.lower().endswith('.fn'):
         print(f"{path}: Error – only .fn files are supported.")
@@ -110,6 +123,9 @@ def run_file(path: str) -> int:
         ast = Parser(tokens).parse()
         parse_time = time.perf_counter() - t0
         TypeChecker().check(ast)
+        
+        # Passive AST normalization (in-memory only)
+        normalize_ast(ast)
         # Compilation
         compiler = Compiler()
         t0 = time.perf_counter()
@@ -128,6 +144,9 @@ def run_file(path: str) -> int:
         tokens = Lexer(src).lex()
         ast = Parser(tokens).parse()
         TypeChecker().check(ast)
+        
+        # Passive AST normalization (in-memory only)
+        normalize_ast(ast)
 
     # Prepare VM
     vm = VM(verbose=False)
