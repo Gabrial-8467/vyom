@@ -33,8 +33,6 @@ Changelog = "https://github.com/gabrialdeora/falcon-lang/releases"
 
 [project.scripts]
 falcon = "falcon.main:main"
-falcon-pkg = "falcon.package_manager.cli:main"
-fpm = "falcon.package_manager.fpm_cli:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

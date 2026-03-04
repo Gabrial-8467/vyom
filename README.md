@@ -35,7 +35,7 @@ This repository contains the complete Falcon implementation, including:
 - **Built-in functions** - Core runtime library (including `show`, `console.log`, regex functions)
 - **Sample `.fn` programs** - Comprehensive examples  
 
-Falcon is actively developed as a **production-grade scripting language** with modules, async, optimized bytecode, and an ahead-of-time compiler.
+Falcon is actively developed as a **production-grade scripting language** with async, optimized bytecode, and an ahead-of-time compiler.
 
 ## Custom Easy Syntax (Recommended)
 
@@ -351,15 +351,6 @@ falcon/
 │   │   │   ├── formatter.py  # AST visitor for normalization
 │   │   │   ├── printer.py    # Structured output generation
 │   │   │   └── rules.py     # Formatting rules configuration
-│   │   ├── package_manager/ # Package manager system
-│   │   │   ├── __init__.py  # Package exports
-│   │   │   ├── cli.py        # Traditional CLI interface
-│   │   │   ├── fpm_cli.py    # npm/pip style CLI interface (FPM)
-│   │   │   ├── config.py     # Configuration management
-│   │   │   ├── installer.py  # Package installation logic
-│   │   │   ├── manager.py    # Main package manager interface
-│   │   │   ├── package.py    # Package representation
-│   │   │   └── resolver.py   # Dependency resolution
 │   │   ├── repl.py          # REPL: interactive development environment
 │   │   ├── runner.py        # File runner: executes .fn programs
 │   │   ├── type_checker.py # Type system and runtime type checking
@@ -775,8 +766,8 @@ show("Promise scheduled.");
 
 ### 🛠 Development Tooling  
 - [x] **Passive built-in formatter** — AST-based code normalization (automatic, no CLI command needed)
+- [ ] **Package manager** —  package management system
 - [ ] LSP server for VS Code  
-- [x] **Package manager** — Install, manage, and create Falcon packages with npm/pip style interface
 - [x] **Installer** — Windows .exe and installer implemented (.deb not yet implemented)  
 
 ---

@@ -399,38 +399,6 @@ def _build_argparser() -> argparse.ArgumentParser:
     # REPL command
     repl_parser = subparsers.add_parser("repl", help="Start interactive REPL")
     
-    # Package manager command
-    pkg_parser = subparsers.add_parser("pkg", help="Package manager")
-    pkg_subparsers = pkg_parser.add_subparsers(dest="pkg_command", help="Package commands")
-    
-    # Install command
-    install_parser = pkg_subparsers.add_parser("install", help="Install a package")
-    install_parser.add_argument("source", help="Package source (directory, file, or URL)")
-    
-    # Uninstall command
-    uninstall_parser = pkg_subparsers.add_parser("uninstall", help="Uninstall a package")
-    uninstall_parser.add_argument("package", help="Package name to uninstall")
-    
-    # List packages command
-    list_parser = pkg_subparsers.add_parser("list", help="List installed packages")
-    list_parser.add_argument("--search", help="Filter packages by search term")
-    
-    # Package info command
-    info_parser = pkg_subparsers.add_parser("info", help="Show package information")
-    info_parser.add_argument("package", help="Package name")
-    
-    # Create package command
-    create_parser = pkg_subparsers.add_parser("create", help="Create a new package")
-    create_parser.add_argument("name", help="Package name")
-    create_parser.add_argument("--description", default="", help="Package description")
-    create_parser.add_argument("--author", help="Package author")
-    create_parser.add_argument("--version", default="1.0.0", help="Package version")
-    create_parser.add_argument("--directory", default=".", help="Directory to create package in")
-    
-    # FPM command (npm/pip style)
-    fpm_parser = subparsers.add_parser("fpm", help="Falcon Package Manager (npm/pip style)")
-    fpm_parser.add_argument("fpm_args", nargs=argparse.REMAINDER, help="FPM command and arguments")
-    
     # Global options
     p.add_argument("-i", "--repl", action="store_true", help="Start interactive REPL")
     p.add_argument("--version", action="store_true", help="Print version and exit")
@@ -446,49 +414,6 @@ def main(argv: list[str] | None = None) -> int:
     if args.version:
         print(FALCON_VERSION)
         return 0
-
-    # Handle package manager commands
-    if args.command == "pkg":
-        try:
-            from .package_manager.cli import PackageManagerCLI
-            cli = PackageManagerCLI()
-            
-            # Convert pkg args to CLI format
-            pkg_args = [args.pkg_command] if args.pkg_command else []
-            if args.pkg_command == "install":
-                pkg_args.append(args.source)
-            elif args.pkg_command == "uninstall":
-                pkg_args.append(args.package)
-            elif args.pkg_command == "list":
-                if args.search:
-                    pkg_args.extend(["--search", args.search])
-            elif args.pkg_command == "info":
-                pkg_args.append(args.package)
-            elif args.pkg_command == "create":
-                pkg_args.append(args.name)
-                if args.description:
-                    pkg_args.extend(["--description", args.description])
-                if args.author:
-                    pkg_args.extend(["--author", args.author])
-                if args.version != "1.0.0":
-                    pkg_args.extend(["--version", args.version])
-                if args.directory != ".":
-                    pkg_args.extend(["--directory", args.directory])
-            
-            return cli.run(pkg_args)
-        except ImportError:
-            print("Package manager not available", file=sys.stderr)
-            return 1
-    
-    # Handle FPM command (npm/pip style)
-    if args.command == "fpm":
-        try:
-            from .package_manager.fpm_cli import FPMCLI
-            cli = FPMCLI()
-            return cli.run(args.fpm_args)
-        except ImportError:
-            print("FPM not available", file=sys.stderr)
-            return 1
 
     # Handle run command
     if args.command == "run" and hasattr(args, 'file'):
