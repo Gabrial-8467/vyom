@@ -1,8 +1,0 @@
-function test(x) { 
-    match x { 
-        case [y]: show(y); 
-        case _: show('no match'); 
-    } 
-}
-test([42]);
-test(5);

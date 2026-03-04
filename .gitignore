@@ -18,6 +18,7 @@ lib/
 lib64/
 parts/
 sdist/
+scripts/
 var/
 wheels/
 share/python-wheels/
@@ -185,3 +186,35 @@ cython_debug/
 *.exe
 *.msi
 *.iss.tmp
+
+# Falcon-specific build artifacts
+falcon.spec
+falcon-setup-*.exe
+!installer/falcon.iss
+
+# PyInstaller build files
+*.toc
+*.pyz
+base_library.zip
+localpycs/
+warn-*.txt
+xref-*.html
+
+# Falcon temporary files
+*.fn.tmp
+*.fn.bak
+repl_test.fn
+test_*.fn
+simple_pattern.fn
+test_case_fix.fn
+test_pattern.fn
+test_simple_match.fn
+
+# Falcon bytecode cache
+*.fbc
+*.fbc.tmp
+
+# Falcon debug files
+debug_*.py
+debug_*.log
+parser_fix.txt

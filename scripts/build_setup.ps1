@@ -1,6 +1,6 @@
 param(
     [string]$PythonExe = ".\myenv\Scripts\python.exe",
-    [string]$InnoCompiler = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+    [string]$InnoCompiler = "D:\AAProgram File\Inno Setup 6\ISCC.exe"
 )
 
 $ErrorActionPreference = "Stop"

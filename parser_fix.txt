@@ -1,2 +1,0 @@
-self._optional_semicolon()
-                arms.append(CaseArm(pattern, guard, BlockStmt([ExprStmt(expr)]))
