@@ -781,5 +781,5 @@ See `LICENSE` for details.
 
 ---
 
-# 🦅 Vyom — “Small language. Big possibilities.”
+# Vyom — “Small language. Big possibilities.”
 Vyom is built to grow — from a lightweight VM to a complete, scripting language.
