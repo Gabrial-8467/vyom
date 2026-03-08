@@ -15,18 +15,41 @@ A modern, expressive programming language with clean syntax, advanced pattern ma
 - **Collections**: Lists, tuples, dictionaries, sets, and arrays
 - **REPL**: Interactive development environment
 
-## 📦 Installation
+# 📦 Installation
 
-### From Source
+Clone:
+
 ```bash
 git clone https://github.com/Gabrial-8467/vyom.git
 cd vyom
+```
+
+Set up environment:
+
+```bash
+python -m venv myenv
+myenv\Scripts\activate  # Windows
+# or
+source myenv/bin/activate
+```
+
+Install dependencies (optional):
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+# ▶ Install Vyom
+
+```bash
 pip install -e .
 ```
 
-### Using pip (when published)
+# ▶ Running the REPL
+
 ```bash
-pip install vyom-lang
+python -m vyom.repl
 ```
 
 ## 🎯 Quick Start
